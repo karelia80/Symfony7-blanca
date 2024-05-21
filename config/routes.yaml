@@ -3,3 +3,12 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+#Defeinimos una ruta
+app_aletorios_aleatorios3:
+    path: /aleatorios/ej3
+    controller: App\Controller\AleatoriosController::index3
+
+
+app_aletorios_aleatorios5:
+    path: /aleatorios/ej5/{num1}/{num2}
+    controller: App\Controller\AleatoriosController::index5
