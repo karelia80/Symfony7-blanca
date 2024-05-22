@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Menu!{% endblock %}
+
+{% block body %}
+<body class="d-flex flex-column justify-content-center align-items-center min-vh-100 bg-dark">
+    <main class="text-center w-50">
+        <nav class="mx-auto bg-primary rounded p-3">
+            <h2 class="alert alert-primary mt-3 fs-5">Menu</h2>
+        </nav>
+        <p class="alert alert-primary mt-3">
+            Menú Exámen en Symfony
+        </p>
+        <a href="/aleatorios/pitagoras1" class="btn btn-primary d-block mt-3">Pitágoras 1</a>
+        <a href="/aleatorios/pitagoras2" class="btn btn-primary d-block mt-3">Pitágoras 2</a>
+        <a href="/aleatorios/newton" class="btn btn-primary d-block mt-3">Newton</a>
+        <a href="/aleatorios/cabify " class="btn btn-primary d-block mt-3">Cabify</a>
+
+    </main>
+</body>
+{% endblock %}

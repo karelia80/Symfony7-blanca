@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TwigController!
+{% endblock %}
+
+{% block body %}
+	<style>
+		.example-wrapper {
+			margin: 1em auto;
+			max-width: 800px;
+			width: 95%;
+			font: 18px / 1.5 sans-serif;
+		}
+		.example-wrapper code {
+			background: #F5F5F5;
+			padding: 2px 6px;
+		}
+	</style>
+	<body class="bg-dark text-light">
+		<section class="example-wrapper">
+			<h1>Hola{{ controller_name }}! 🟨</h1>
+
+			Mensaje sacado de estos archivos:
+			<ul>
+				<li>Controlador
+					<code>/var/www/html/Pokedex/src/Controller/TwigController.php</code>
+				</li>
+				<li>Plantilla
+					<code>/var/www/html/Pokedex/templates/twig/index.html.twig</code>
+				</li>
+			</ul>
+			<section class="text-center bg-info p-5 w-50 mx-auto text-light">
+				<h2>
+					Datos de la persona
+				</h2>
+                <p>Nombre {{TwigPersona.nombre}}</p>
+                <p>Edad {{TwigPersona.edad}}</p>
+                <p>Sexo {% if TwigPersona.sexo == 0 %}
+                    Hombre
+                    {% elseif TwigPersona.sexo == 1 %}
+                    Mujer
+                    {%endif%}
+                
+                </p>
+			</section>
+
+		</body>
+	{% endblock %}
+
