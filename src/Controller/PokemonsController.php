@@ -8,8 +8,15 @@ use App\Repository\PokemonsRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -144,15 +151,15 @@ class PokemonsController extends AbstractController
         $pokemon =  $repoPokemons->find($id);
 
         if (!$pokemon) {
-            throw $this-> createNotFoundException("No se ha encontrado este Pokemon");
+            throw $this->createNotFoundException("No se ha encontrado este Pokemon");
         }
-        $pokemon -> setAltura($altura);
-        $pokemon -> setPeso($peso);
-        $gestorEntidades -> flush();
+        $pokemon->setAltura($altura);
+        $pokemon->setPeso($peso);
+        $gestorEntidades->flush();
 
         //Hacer redireccion (EXAMEN) Se redirecciona al nombre de la ruta!!! sale en el php bin/console debug:router
 
-        return $this-> redirectToRoute("app_pokemons_verpokemons");
+        return $this->redirectToRoute("app_pokemons_verpokemons");
     }
     //DELETE, eliminar con parametros (id)
 
@@ -165,10 +172,82 @@ class PokemonsController extends AbstractController
         $pokemon =  $repoPokemons->find($id);
 
         //y ahora Borramos y actualizamos
-        $gestorEntidades ->remove($pokemon);
+        $gestorEntidades->remove($pokemon);
         $gestorEntidades->flush();
 
         return new Response("Pokemon Eliminado con ID: " . $id);
     }
+    //FORMULARIOS
+    //dos inyescciones: la solicitud(request)y el doctrine
 
+    #[Route('/formulario', name: 'formulario')]
+    public function formulario(Request $request, ManagerRegistry $doctrine): Response
+    {
+        //1. Creamos el objeto a guardar vacio
+
+        $pokemon = new Pokemons();
+
+        //2. Creamos el objeto formulario
+
+        $formulario = $this->createFormBuilder($pokemon)
+            ->add("nombre", TextType::class, [
+                "attr" => ['class' => 'form-control'],
+                'label_attr' => ['class' => 'form-label'],
+            ])
+            ->add("altura", IntegerType::class, [
+                "attr" => ['class' => 'form-control'],
+                'label_attr' => ['class' => 'form-label'],
+            ])
+            ->add(
+                "peso",
+                NumberType::class,
+                [
+                    "attr" => ['class' => 'form-control', 'step' => '0.01'],
+                    'html5' => true
+                ]
+            )
+            ->add("sexo", ChoiceType::class, [
+                "choices" => ['macho' => false, "Hembra" => true],
+                "attr" => ['class' => 'form-control'],
+                'label_attr' => ['class' => 'form-label'],
+            ])
+
+            //Vamos a añadir el capo FK Clave foranea
+            ->add("idCategoria", EntityType::class, [
+                "class" => Categorias::class, //Entidad
+                //este choice es dentro de la entidad de pokemons se corresponde el nombre en la BBDD
+                "choice_label"  =>  "categoria", //aqui en minuscula
+                "placeholder"=> "Selecciona Categoria",
+                "attr" => ['class' => 'form-select'],
+
+            ])
+
+            ->add("guardar", SubmitType::class,["attr" => ['class' => 'btn btn-dark'],
+             "label" => "Guardar Pokemon"])
+
+
+            ->getForm();
+
+
+        //3. Tratar el formulario. ir a la doc symfony a procesador de formularios https://symfony.com/doc/current/forms.html#processing-forms
+
+        $formulario->handleRequest($request);
+
+        if ($formulario->isSubmitted() && $formulario->isValid()) {
+            $gestorEntidades = $doctrine->getManager();
+            $gestorEntidades->persist($pokemon);
+            $gestorEntidades->flush();
+
+            //Redicionamos
+            return $this->redirectToRoute("app_pokemons_verpokemons");
+        }
+
+
+
+        //4. Pintar el formulario.
+        return $this->render('pokemons/formulario.html.twig', [
+            'controller_name' => 'PokemonsController',
+            "formulario" => $formulario,
+        ]);
+    }
 }

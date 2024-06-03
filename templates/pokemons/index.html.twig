@@ -20,7 +20,7 @@
 	</style>
 
 	<div class="example-wrapper">
-		<h1>Hello
+		<h1>Entidad</h1>
 		
 
 	</div>
@@ -44,7 +44,7 @@
                 <td>{{pokemon.nombre}}</td>
                 <td>{{pokemon.altura}}</td>
                 <td>{{pokemon.peso}}</td>
-                <td>{{pokemon.sexo}}</td>
+                <td>{% if pokemon.sexo %}Hembra {%else%}Macho {%endif%}</td>
                 <td>{{pokemon.idCategoria.categoria}}</td>
             </tr>
             {% endfor %}
