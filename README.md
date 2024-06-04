@@ -43,3 +43,6 @@ migrate -> Introduces tablas
 - localhost:8000/pokemons/actualizar/2/40/80
 - localhost:8000/pokemons/eliminar/2
 - localhost:8000/pokemons/formulario
+
+## Endpoints Ejercicio10 
+- localhost:8000//insertar-con-categorias/cangrejo/kingler/130/60/1
